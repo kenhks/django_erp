@@ -11,3 +11,4 @@ bookstore/staticfiles/
 *.py[cod]
 *$py.class
 *.so
+.coverage
