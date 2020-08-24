@@ -41,8 +41,7 @@ class OrganizationMixin(models.Model):
     """
     A abstract mixin to transform normal model to oraganization-aware model
     """
-    organization = models.ManyToManyField("Organization",
-                                          related_name="orgs", related_query_name="org")
+    organizations = models.ManyToManyField("Organization", verbose_name=_("Organizations"))
 
     class Meta:
         abstract = True
