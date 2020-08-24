@@ -26,10 +26,16 @@ class ActiveControlMixin(models.Model):
     """
     A mixin model for model composition
     """
-    active = models.BooleanField(default=True)
+    active = models.BooleanField(default=True, verbose_name=_("Active"))
 
     class Meta:
         abstract = True
+
+    def disable(self, save=False):
+        self.active = False
+        if save:
+            self.save()
+
 
 class OrganizationMixin(models.Model):
     """
