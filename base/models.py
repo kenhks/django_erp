@@ -23,7 +23,9 @@ class Organization(BaseAbstractModel):
         (3, 'Division'),
     ]
     users = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                   through="OrganizationMember", related_name="organizations",
+                                   through="OrganizationMember",
+                                   through_fields=("organization", "user"),
+                                   related_name="orgs",
                                    blank=True, verbose_name=_("Organization Users"),)
 
     level = models.IntegerField(choices=level_choice, default=0,

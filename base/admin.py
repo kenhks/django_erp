@@ -28,5 +28,6 @@ class OrganizationMemberAdmin(admin.ModelAdmin):
     list_display = ("id", "organization_id", "user_id", )
 
 @admin.register(OrganizationMemberRole)
-class OrganizationMemberAdmin(admin.ModelAdmin):
+class OrganizationMemberRoleAdmin(admin.ModelAdmin):
     list_display = ("id", "name",)
+
