@@ -7,7 +7,7 @@ db.sqlite3
 db.sqlite3-journal
 media
 
-bookstore/staticfiles/
+django_erp/staticfiles/
 *.py[cod]
 *$py.class
 *.so
