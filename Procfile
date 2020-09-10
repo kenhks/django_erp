@@ -1,2 +1,2 @@
 web: gunicorn django_erp.wsgi
-release: ./release.sh
+release: python manage.py migrate
