@@ -1,70 +1,73 @@
-# -*- coding: utf-8 -*-
+from django.contrib.auth.models import (
+    AbstractUser,
+    Group as BaseGroup
+)
 from django.db import models
-from django.conf import settings
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
+from mptt.models import MPTTModel, TreeForeignKey
+
 from .abstract import BaseAbstractModel
-# from django.utils.functional import cached_property
 
 
-class Organization(BaseAbstractModel):
+class Group(BaseGroup):
     """
-    Stores a single organization record, related user and sub-organization model
+    A Fake Proxy Group to change app label for group
     """
+    class Meta:
+        proxy = True
+        verbose_name = _('group')
+        verbose_name_plural = _('groups')
 
-    name = models.CharField(_("Name"), max_length=255,
-                            blank=False, unique=True)
-    parent = models.ForeignKey("self", on_delete=models.PROTECT, related_name="childs",
-                               null=True, blank=True,
-                               verbose_name=_("Parent Organization"),)
-    level_choice = [
-        (0, 'Normal'),
-        (1, 'Company'),
-        (2, 'Department'),
-        (3, 'Division'),
-    ]
-    users = models.ManyToManyField(settings.AUTH_USER_MODEL,
-                                   through="OrganizationMember",
-                                   through_fields=("organization", "user"),
-                                   related_name="orgs",
-                                   blank=True, verbose_name=_("Organization Users"),)
 
-    level = models.IntegerField(choices=level_choice, default=0,
-                                verbose_name=_("Level"))
+class User(AbstractUser, BaseAbstractModel):
+    """
+    Users within the Django authentication system are represented by this
+    model.
+    Customized user model for project
+    Username and password are required. Other fields are optional.
+    """
+    companies = models.ManyToManyField(
+        'base.company',
+        blank=True,
+        verbose_name=_('Allowed Companies'),
+        help_text=_(
+            'The companies this user belongs to. A user will get all accesses '
+            'granted to each of their companies.'
+        ),
+        related_name='users',
+        related_query_name='user',
+    )
+
+    class Meta(AbstractUser.Meta):
+        abstract = False
+        ordering = ['-id']
+
+    @property
+    def get_all_permissions_sorted(self):
+        return sorted(self.get_all_permissions())
+
+
+class Company(MPTTModel, BaseAbstractModel):
+    """
+    Records are stricted access by company which is represented by this model.
+    This model use MPTT for data hierarchy.
+    """
+    name = models.CharField(verbose_name=_('Name'), max_length=255,
+                            null=False, unique=True,
+                            help_text=_('A unique string to name this company'),)
+    parent = TreeForeignKey('self', on_delete=models.PROTECT, related_name='children',
+                            null=True, blank=True,
+                            verbose_name=_('Parent Company'),
+                            help_text=_('The company owned this company'),)
 
     class Meta:
-        verbose_name = "Organization"
+        ordering = ['-id']
+        verbose_name = 'company'
+        verbose_name_plural = 'companies'
 
     def __str__(self):
         return self.name
 
-
-
-class OrganizationMember(BaseAbstractModel):
-    """
-    This model represents the intermediate model of the relation between a User and a Organization.
-    """
-    organization = models.ForeignKey("Organization", on_delete=models.CASCADE)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,
-                             on_delete=models.CASCADE)
-    roles = models.ManyToManyField(
-        "OrganizationMemberRole", blank=True, verbose_name=_('roles'))
-
-    class Meta:
-        ordering = ("organization", "user")
-        unique_together = ("organization", "user")
-        verbose_name = "Organization Member"
-
-    def __str__(self):
-        return "{} - {}".format(self.organization.name, self.user.username)
-
-
-class OrganizationMemberRole(BaseAbstractModel):
-
-    name = models.CharField(_("Name"), max_length=255,
-                            blank=False, unique=True)
-
-    class Meta:
-        verbose_name = "Organization Role"
-
-    def __str__(self):
-        return self.name
+    def duplicate(self, user):
+        self.name += _('(copy)')
+        return super().duplicate(user)

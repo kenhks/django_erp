@@ -17,3 +17,5 @@ staticfiles/
 .vscode/
 *.code-workspace
 
+tmp/
+.ipynb_checkpoints/

@@ -1,7 +1,9 @@
-# -*- coding: utf-8 -*-
 from django.apps import AppConfig
-
+from django.utils.translation import gettext_lazy as _
 
 class BaseConfig(AppConfig):
-    name = "base"
-    verbose_name = "Settings"
+    """
+    App Configuration for base
+    """
+    name = 'base'
+    verbose_name = _('Settings')
