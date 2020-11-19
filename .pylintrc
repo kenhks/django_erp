@@ -1,0 +1,5 @@
+[MASTER]
+load-plugins=pylint_django
+max-line-length=200
+ignore=tests.py,migrations
+disable=C0114,C0115,C0116
