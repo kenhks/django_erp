@@ -2,11 +2,11 @@
 Django settings for django_erp project.
 """
 
-import os
+from pathlib import Path
 from datetime import timedelta
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+BASE_DIR = Path(__file__).parent.parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '%tvhus9p4(zk0krd^@ayapx4m12x&*az+gi)g^y393c)%ryw0-'
 
@@ -67,7 +67,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -104,8 +104,8 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+
+STATIC_ROOT = BASE_DIR / 'static'
 STATIC_URL = '/static/'
 
 REST_FRAMEWORK = {
