@@ -10,8 +10,7 @@ BASE_DIR = Path(__file__).parent.parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '%tvhus9p4(zk0krd^@ayapx4m12x&*az+gi)g^y393c)%ryw0-'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = []
 
